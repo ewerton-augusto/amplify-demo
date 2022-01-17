@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import {Platform} from 'react-native';
 import {
   FlatList,
   Modal,
@@ -8,6 +7,7 @@ import {
   Text,
   TextInput,
   View,
+  Platform,
 } from 'react-native';
 import {DataStore} from 'aws-amplify';
 import {Todo} from './models';
@@ -67,18 +67,36 @@ const TodoList = () => {
   const [todos, setTodos] = useState([]);
 
   useEffect(() => {
-    //to be filled in a later step
+    //query the initial todolist and subscribe to data updates
+    const subscription = DataStore.observeQuery(Todo).subscribe(snapshot => {
+      //isSynced can be used to show a loading spinner when the list is being loaded.
+      const {items, isSynced} = snapshot;
+      setTodos(items);
+    });
+
+    //unsubscribe to data updates when component is destroyed so that we don’t introduce a memory leak.
+    return function cleanup() {
+      subscription.unsubscribe();
+    };
   }, []);
 
   async function deleteTodo(todo) {
-    //to be filled in a later step
+    try {
+      await DataStore.delete(todo);
+    } catch (e) {
+      console.log(`Delete failed: ${e}`);
+    }
   }
 
   async function setComplete(updateValue, todo) {
-    //to be filled in a later step
+    await DataStore.save(
+      Todo.copyOf(todo, updated => {
+        updated.isComplete = updateValue;
+      }),
+    );
   }
 
-  const renderItem = ({item}) => (
+  const TodoItem = ({item}) => (
     <Pressable
       onLongPress={() => {
         deleteTodo(item);
@@ -99,11 +117,7 @@ const TodoList = () => {
   );
 
   return (
-    <FlatList
-      data={todos}
-      keyExtractor={({id}) => id}
-      renderItem={renderItem}
-    />
+    <FlatList data={todos} keyExtractor={({id}) => id} renderItem={TodoItem} />
   );
 };
 
@@ -132,7 +146,7 @@ const Home = () => {
 const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: '#4696ec',
-    paddingTop: Platform.OS === 'ios' ? 44 : 0,
+    paddingTop: Platform.OS === 'ios' ? 44 : null,
   },
   headerTitle: {
     color: '#fff',
