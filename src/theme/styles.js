@@ -8,7 +8,7 @@ export const globalStyles = StyleSheet.create({
   },
   buttonContainer: {
     alignSelf: 'center',
-    backgroundColor: '#4696ec',
+    backgroundColor: '#f44336',
     borderRadius: 99,
     paddingHorizontal: 8,
   },

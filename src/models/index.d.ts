@@ -12,6 +12,7 @@ export declare class Todo {
   readonly id: string;
   readonly name: string;
   readonly description?: string;
+  readonly tags?: (string | null)[];
   readonly isComplete: boolean;
   readonly createdAt?: string;
   readonly updatedAt?: string;

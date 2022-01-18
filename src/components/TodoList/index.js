@@ -18,33 +18,11 @@ const TodoList = () => {
     };
   }, []);
 
-  async function deleteTodo(todo) {
-    try {
-      await DataStore.delete(todo);
-    } catch (e) {
-      console.log(`Delete failed: ${e}`);
-    }
-  }
-
-  async function setComplete(updateValue, todo) {
-    await DataStore.save(
-      Todo.copyOf(todo, updated => {
-        updated.isComplete = updateValue;
-      }),
-    );
-  }
-
   return (
     <FlatList
       data={todos}
       keyExtractor={({id}) => id}
-      renderItem={({item}) => (
-        <TodoItem
-          deleteTodo={deleteTodo}
-          setComplete={setComplete}
-          item={item}
-        />
-      )}
+      renderItem={({item}) => <TodoItem item={item} />}
     />
   );
 };

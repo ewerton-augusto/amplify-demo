@@ -8,12 +8,16 @@ import {globalStyles} from '../../theme/styles';
 const AddTodoModal = ({modalVisible, setModalVisible}) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [tags, setTags] = useState([]);
 
   async function addTodo() {
-    await DataStore.save(new Todo({name, description, isComplete: false}));
+    await DataStore.save(
+      new Todo({name, description, tags, isComplete: false}),
+    );
     setModalVisible(false);
     setName('');
     setDescription('');
+    setTags([]);
   }
 
   function closeModal() {
@@ -39,6 +43,11 @@ const AddTodoModal = ({modalVisible, setModalVisible}) => {
           <TextInput
             onChangeText={setDescription}
             placeholder="Description"
+            style={styles.modalInput}
+          />
+          <TextInput
+            onChangeText={setTags}
+            placeholder="Tags separated by comma. e.g: tag1, tag2"
             style={styles.modalInput}
           />
           <Pressable onPress={addTodo} style={globalStyles.buttonContainer}>

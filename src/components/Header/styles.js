@@ -2,7 +2,7 @@ import {StyleSheet, Platform} from 'react-native';
 
 export const styles = StyleSheet.create({
   headerContainer: {
-    backgroundColor: '#4696ec',
+    backgroundColor: '#ba000d',
     paddingTop: Platform.OS === 'ios' ? 44 : null,
   },
   headerTitle: {
